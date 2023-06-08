@@ -9,6 +9,11 @@ import (
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("%s received at /\n", r.Method)
 
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	rb := &ResponseBody{
 		Message: "Hello World!!",
 		Data: map[string]string{
