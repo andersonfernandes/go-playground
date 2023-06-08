@@ -6,12 +6,12 @@ import (
 	"net/http"
 )
 
-type responseBody struct {
+type ResponseBody struct {
 	Message string            `json:"message"`
 	Data    map[string]string `json:"data"`
 }
 
-func (rb *responseBody) writeJsonResponse(w http.ResponseWriter) {
+func (rb *ResponseBody) WriteJsonResponse(w http.ResponseWriter) {
 	jsonResp, err := json.Marshal(rb)
 	if err != nil {
 		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
