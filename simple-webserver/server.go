@@ -9,19 +9,17 @@ import (
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("%s received at /\n", r.Method)
 
-	if r.Method != "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
+	rb := ResponseBody{}
+	s := http.StatusOK
+	if r.Method != http.MethodGet {
+		rb.Message = "Method not allowed!"
+		s = http.StatusMethodNotAllowed
+	} else {
+		rb.Message = "Hello World!!"
+		rb.Data = map[string]string{"foo": "Bar"}
 	}
 
-	rb := &ResponseBody{
-		Message: "Hello World!!",
-		Data: map[string]string{
-			"foo": "Bar",
-		},
-	}
-
-	rb.WriteJsonResponse(w)
+	rb.WriteJsonResponse(w, s)
 }
 
 func initServer() {
