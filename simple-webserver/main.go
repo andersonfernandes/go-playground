@@ -7,7 +7,7 @@ import (
 )
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	log.Printf("%s received at /\n", "GET")
+	log.Printf("%s received at /\n", r.Method)
 
 	rb := &responseBody{
 		Message: "Hello World!!",
