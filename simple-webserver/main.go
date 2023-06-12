@@ -23,12 +23,12 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-  server := restserever.Server{
-    Mux: *http.NewServeMux(),
-    Port: "8088",
-  }
+	server := restserever.Server{
+		Mux:  *http.NewServeMux(),
+		Port: "8088",
+	}
 
-  server.Mux.HandleFunc("/", rootHandler)
-  
-  server.Start()
+	server.Mux.HandleFunc("/", rootHandler)
+
+	server.Start()
 }

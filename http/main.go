@@ -15,10 +15,10 @@ func main() {
 		os.Exit(1)
 	}
 
-  // body := make([]byte, 99999)
-  // resp.Body.Read(body)
-  //
+	// body := make([]byte, 99999)
+	// resp.Body.Read(body)
+	//
 	// fmt.Println(string(body))
 
-  io.Copy(os.Stdout, resp.Body)
+	io.Copy(os.Stdout, resp.Body)
 }
