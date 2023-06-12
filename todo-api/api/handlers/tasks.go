@@ -8,7 +8,7 @@ import (
 )
 
 func TasksHandler(w http.ResponseWriter, r *http.Request) {
-  db := dbconnection.Get()
+	db := dbconnection.Get()
 	rb := restserever.ResponseBody{}
 
 	switch r.Method {
@@ -29,5 +29,5 @@ func TasksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rb.WriteJsonResponse(w, http.StatusOK)
-  db.Close()
+	db.Close()
 }
