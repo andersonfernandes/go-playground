@@ -1,21 +1,14 @@
 package handlers
 
 import (
-	"database/sql"
 	"go-playground/simple-webserver/pkg/restserever"
 	"go-playground/todo-api/api/types"
-	"log"
+	"go-playground/todo-api/internal/dbconnection"
 	"net/http"
-
-	_ "github.com/lib/pq"
 )
 
 func TasksHandler(w http.ResponseWriter, r *http.Request) {
-	connStr := "postgres://postgres:@localhost:5439/todo_go?sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		log.Fatal(err)
-	}
+  db := dbconnection.Get()
 	rb := restserever.ResponseBody{}
 
 	switch r.Method {
@@ -36,4 +29,5 @@ func TasksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rb.WriteJsonResponse(w, http.StatusOK)
+  db.Close()
 }
