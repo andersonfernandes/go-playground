@@ -7,8 +7,8 @@ import (
 )
 
 type ResponseBody struct {
-	Message string            `json:"message"`
-	Data    map[string]string `json:"data,omitempty"`
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"`
 }
 
 func (rb *ResponseBody) WriteJsonResponse(w http.ResponseWriter, s int) {
