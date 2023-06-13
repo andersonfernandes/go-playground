@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-playground/todo-api/api"
+	"go-playground/tasks-api/api"
 	"log"
 
 	"github.com/joho/godotenv"

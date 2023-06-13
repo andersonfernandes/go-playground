@@ -2,7 +2,7 @@ package api
 
 import (
 	"go-playground/simple-webserver/pkg/restserever"
-	"go-playground/todo-api/api/handlers"
+	"go-playground/tasks-api/api/handlers"
 	"net/http"
 )
 

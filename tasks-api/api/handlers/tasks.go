@@ -3,8 +3,8 @@ package handlers
 import (
 	"encoding/json"
 	"go-playground/simple-webserver/pkg/restserever"
-	"go-playground/todo-api/api/types"
-	"go-playground/todo-api/internal/database/queries"
+	"go-playground/tasks-api/api/types"
+	"go-playground/tasks-api/internal/database/queries"
 	"net/http"
 	"time"
 )

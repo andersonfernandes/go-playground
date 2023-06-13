@@ -1,8 +1,8 @@
 package queries
 
 import (
-	"go-playground/todo-api/api/types"
-	"go-playground/todo-api/internal/database"
+	"go-playground/tasks-api/api/types"
+	"go-playground/tasks-api/internal/database"
 )
 
 func GetAllTasks() []types.Task {
