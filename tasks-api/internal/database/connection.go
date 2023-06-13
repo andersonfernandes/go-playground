@@ -9,7 +9,7 @@ import (
 )
 
 func GetConnection() *sql.DB {
-	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	db, err := sql.Open("postgres", os.Getenv("TASKS_DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
