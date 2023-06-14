@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-playground/simple-webserver/pkg/restserever"
+	"go-playground/simple-webserver/pkg/restserver"
 	"log"
 	"net/http"
 )
@@ -9,7 +9,7 @@ import (
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("%s received at /\n", r.Method)
 
-	rb := restserever.ResponseBody{}
+	rb := restserver.ResponseBody{}
 	s := http.StatusOK
 	if r.Method != http.MethodGet {
 		rb.Message = "Method not allowed!"
@@ -23,7 +23,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	server := restserever.Server{
+	server := restserver.Server{
 		Mux:  *http.NewServeMux(),
 		Port: "8088",
 	}

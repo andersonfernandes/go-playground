@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"go-playground/simple-webserver/pkg/restserever"
+	"go-playground/simple-webserver/pkg/restserver"
 	"go-playground/tasks-api/api/types"
 	"go-playground/tasks-api/internal/database/queries"
 	"net/http"
@@ -27,7 +27,7 @@ func create(r *http.Request) (*types.Task, error) {
 }
 
 func TasksHandler(w http.ResponseWriter, r *http.Request) {
-	rb := restserever.ResponseBody{}
+	rb := restserver.ResponseBody{}
 	s := http.StatusOK
 
 	switch r.Method {

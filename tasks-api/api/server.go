@@ -1,13 +1,13 @@
 package api
 
 import (
-	"go-playground/simple-webserver/pkg/restserever"
+	"go-playground/simple-webserver/pkg/restserver"
 	"go-playground/tasks-api/api/handlers"
 	"net/http"
 )
 
 func StartServer() {
-	server := restserever.Server{
+	server := restserver.Server{
 		Mux:  *http.NewServeMux(),
 		Port: "8088",
 	}

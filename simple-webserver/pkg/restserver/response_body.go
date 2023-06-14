@@ -1,4 +1,4 @@
-package restserever
+package restserver
 
 import (
 	"encoding/json"
