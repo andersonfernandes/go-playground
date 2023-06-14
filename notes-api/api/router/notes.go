@@ -26,6 +26,20 @@ func NotesRoutes(r *chi.Mux) {
 	})
 }
 
+func validateRequestParams(n *types.Note) []string {
+	e := []string{}
+
+	if n.Title == "" {
+		e = append(e, "title is required")
+	}
+
+	if n.Content == "" {
+		e = append(e, "content is required")
+	}
+
+	return e
+}
+
 func NoteCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
@@ -63,6 +77,14 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	note := &types.Note{CreatedAt: now, UpdatedAt: now}
 
 	json.NewDecoder(r.Body).Decode(note)
+	re := validateRequestParams(note)
+
+	if len(re) != 0 {
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, ResponseBody{Success: false, Errors: re})
+		return
+	}
+
 	err := queries.InsertNote(note)
 
 	if err != nil {
@@ -79,7 +101,6 @@ func UpdateNote(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	note, ok := ctx.Value("note").(*types.Note)
 	if !ok {
-
 		render.Status(r, http.StatusUnprocessableEntity)
 		render.JSON(w, r, ResponseBody{Success: false})
 		return
