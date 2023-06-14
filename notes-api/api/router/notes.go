@@ -15,97 +15,103 @@ import (
 func NotesRoutes(r *chi.Mux) {
 	r.Route("/notes", func(r chi.Router) {
 		r.Get("/", ListNotes)
-    r.Post("/", CreateNote)
+		r.Post("/", CreateNote)
 
-    r.Route("/{id}", func(r chi.Router) {
-      r.Use(NoteCtx)
-      r.Get("/", GetNote)
-      r.Put("/", UpdateNote)
-      r.Delete("/", DeleteNote)
-    })
+		r.Route("/{id}", func(r chi.Router) {
+			r.Use(NoteCtx)
+			r.Get("/", GetNote)
+			r.Put("/", UpdateNote)
+			r.Delete("/", DeleteNote)
+		})
 	})
 }
 
 func NoteCtx(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    id := chi.URLParam(r, "id")
-    note, err := queries.GetNote(id)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		note, err := queries.GetNote(id)
 
-    if err != nil {
-      http.Error(w, http.StatusText(404), 404)
-      return
-    }
+		if err != nil {
+			render.Status(r, http.StatusNotFound)
+			render.JSON(w, r, ResponseBody{Success: false, Errors: []string{"Could not find Note with id=" + id}})
+			return
+		}
 
-    ctx := context.WithValue(r.Context(), "note", note)
-    next.ServeHTTP(w, r.WithContext(ctx))
-  })
+		ctx := context.WithValue(r.Context(), "note", note)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
 
 func GetNote(w http.ResponseWriter, r *http.Request) {
-  ctx := r.Context()
-  note, ok := ctx.Value("note").(*types.Note)
-  if !ok {
-    http.Error(w, http.StatusText(422), 422)
-    return
-  }
+	ctx := r.Context()
+	note, ok := ctx.Value("note").(*types.Note)
+	if !ok {
+		render.Status(r, http.StatusUnprocessableEntity)
+		render.JSON(w, r, ResponseBody{Success: false})
+		return
+	}
 
-  render.JSON(w, r, note)
+	render.JSON(w, r, ResponseBody{Success: true, Data: note})
 }
 
 func ListNotes(w http.ResponseWriter, r *http.Request) {
-	render.JSON(w, r, queries.GetAllNotes())
+	render.JSON(w, r, ResponseBody{Success: true, Data: queries.GetAllNotes()})
 }
 
 func CreateNote(w http.ResponseWriter, r *http.Request) {
-  now := time.Now()
-  note := &types.Note{CreatedAt: now, UpdatedAt: now}
+	now := time.Now()
+	note := &types.Note{CreatedAt: now, UpdatedAt: now}
 
-  json.NewDecoder(r.Body).Decode(note)
-  err := queries.InsertNote(note)
+	json.NewDecoder(r.Body).Decode(note)
+	err := queries.InsertNote(note)
 
-  if err != nil {
-    http.Error(w, http.StatusText(422), 422)
-    return
-  }
+	if err != nil {
+		render.Status(r, http.StatusUnprocessableEntity)
+		render.JSON(w, r, ResponseBody{Success: false})
+		return
+	}
 
-  render.Status(r, http.StatusCreated)
-	render.JSON(w, r, note)
+	render.Status(r, http.StatusCreated)
+	render.JSON(w, r, ResponseBody{Success: true, Data: note})
 }
 
-func UpdateNote(w http.ResponseWriter, r *http.Request)  {
-  ctx := r.Context()
-  note, ok := ctx.Value("note").(*types.Note)
-  if !ok {
-    http.Error(w, http.StatusText(422), 422)
-    return
-  }
+func UpdateNote(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	note, ok := ctx.Value("note").(*types.Note)
+	if !ok {
 
-  newNote := &types.Note{}
-  json.NewDecoder(r.Body).Decode(newNote)
-  
-  note.UpdatedAt = time.Now()
-  note.Title = newNote.Title
-  note.Content = newNote.Content
+		render.Status(r, http.StatusUnprocessableEntity)
+		render.JSON(w, r, ResponseBody{Success: false})
+		return
+	}
 
-  err := queries.UpdateNote(note)
+	newNote := &types.Note{}
+	json.NewDecoder(r.Body).Decode(newNote)
 
-  if err != nil {
-    http.Error(w, http.StatusText(422), 422)
-    return
-  }
+	note.UpdatedAt = time.Now()
+	note.Title = newNote.Title
+	note.Content = newNote.Content
 
-	render.JSON(w, r, note)
+	err := queries.UpdateNote(note)
+
+	if err != nil {
+		render.Status(r, http.StatusUnprocessableEntity)
+		render.JSON(w, r, ResponseBody{Success: false})
+		return
+	}
+
+	render.JSON(w, r, ResponseBody{Success: true, Data: note})
 }
 
 func DeleteNote(w http.ResponseWriter, r *http.Request) {
-  id := chi.URLParam(r, "id")
-  err := queries.DeleteNote(id)
+	id := chi.URLParam(r, "id")
+	err := queries.DeleteNote(id)
 
-  if err != nil {
-    http.Error(w, http.StatusText(422), 422)
-    return
-  }
+	if err != nil {
+		render.Status(r, http.StatusUnprocessableEntity)
+		render.JSON(w, r, ResponseBody{Success: false})
+		return
+	}
 
-  render.Status(r, http.StatusNoContent)
-  render.JSON(w, r, "")
+	render.JSON(w, r, ResponseBody{Success: true})
 }

@@ -23,13 +23,13 @@ func GetAllNotes() []types.Note {
 func GetNote(id string) (*types.Note, error) {
 	db := database.GetConnection()
 
-  note := &types.Note{}
+	note := &types.Note{}
 	s := "SELECT * FROM notes WHERE id=$1"
 	err := db.QueryRow(s, id).Scan(&note.Id, &note.Title, &note.Content, &note.CreatedAt, &note.UpdatedAt)
 
 	db.Close()
 
-  return note, err
+	return note, err
 }
 
 func InsertNote(note *types.Note) error {
@@ -40,7 +40,7 @@ func InsertNote(note *types.Note) error {
 
 	db.Close()
 
-  return err
+	return err
 }
 
 func UpdateNote(note *types.Note) error {
@@ -51,7 +51,7 @@ func UpdateNote(note *types.Note) error {
 
 	db.Close()
 
-  return err
+	return err
 }
 
 func DeleteNote(id string) error {
@@ -62,6 +62,5 @@ func DeleteNote(id string) error {
 
 	db.Close()
 
-  return err
+	return err
 }
-
