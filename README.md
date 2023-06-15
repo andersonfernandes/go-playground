@@ -8,6 +8,7 @@ Playground project for practicing the basics of the [Go programming language](ht
 - [simple-webserver](/simple-webserver) using basic concepts of http servers
 - [tasks-api](/tasks-api) practicing connection with a database and reusing some code from [simple-webserver/restserver pkg](/simple-webserver/pkg/restserver)
 - [notes-api](/notes-api) using [chi](https://github.com/go-chi/chi) router and creating a full CRUD
+- [snake](/snake) just the classical snake game
 
 ### References
 
