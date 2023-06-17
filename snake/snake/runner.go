@@ -41,7 +41,10 @@ func Run() {
 			if e.Key == termbox.KeyCtrlC {
 				quit()
 			} else {
-				a.Snake.UpdateDirection(e.Key)
+				if e.Key == termbox.KeyArrowUp || e.Key == termbox.KeyArrowDown || e.Key == termbox.KeyArrowRight || e.Key == termbox.KeyArrowLeft {
+					a.Snake.UpdateDirection(e.Key)
+				}
+
 				go listenKeyboard(c)
 			}
 		}
@@ -58,5 +61,5 @@ func listenKeyboard(c chan termbox.Event) {
 
 func quit() {
 	termbox.Close()
-	os.Exit(1)
+	os.Exit(0)
 }
