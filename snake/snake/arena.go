@@ -21,54 +21,87 @@ const (
 	YBorder        = "│"
 )
 
-type Snake struct {
-	X         int
-	Y         int
-	Direction string
-	ChangeIn  int
-	ChangeTo  string
+type Pair [2]int
+
+type SnakePart struct {
+	Position  Pair
+	Direction []string
+	Next      *SnakePart
 }
 
 type Arena struct {
-	Snake []*Snake
-	MaxX  int
-	MaxY  int
+	SnakeHead *SnakePart
+	MaxX      int
+	MaxY      int
+}
+
+func (a *Arena) eat() {
+	if a.SnakeHead == nil {
+		a.SnakeHead = &SnakePart{Position: Pair{0, 0}, Direction: []string{Right}}
+		return
+	}
+
+	cs := a.SnakeHead
+	for cs.Next != nil {
+		cs = cs.Next
+	}
+
+	d := cs.Direction[len(cs.Direction)-1]
+	s := &SnakePart{Direction: []string{d}}
+	switch d {
+	case Up:
+		s.Position = Pair{cs.Position[0], cs.Position[1] + 1}
+	case Down:
+		s.Position = Pair{cs.Position[0], cs.Position[1] - 1}
+	case Right:
+		s.Position = Pair{cs.Position[0] - 1, cs.Position[1]}
+	case Left:
+		s.Position = Pair{cs.Position[0] + 1, cs.Position[1]}
+	}
+
+	cs.Next = s
 }
 
 func (a *Arena) Move() {
-	for _, s := range a.Snake {
-		switch s.Direction {
+	cs := a.SnakeHead
+	var d string
+
+	for cs.Next != nil {
+		d, cs.Direction = cs.Direction[0], cs.Direction[1:]
+
+		switch d {
 		case Up:
-			s.Y -= 1
+			cs.Position[1] -= 1
 		case Down:
-			s.Y += 1
+			cs.Position[1] += 1
 		case Right:
-			s.X += 1
+			cs.Position[0] += 1
 		case Left:
-			s.X -= 1
+			cs.Position[0] -= 1
 		}
 
-		if s.ChangeIn == 1 {
-			s.Direction = s.ChangeTo
+		if len(cs.Direction) == 0 {
+			cs.Direction = append(cs.Direction, d)
 		}
-		s.ChangeIn -= 1
+
+		cs = cs.Next
 	}
 }
 
 func (a *Arena) SetDirection(k termbox.Key) {
 	d := directionFromKey(k)
-	ci := 0
+	a.SnakeHead.Direction = []string{d}
 
-	for i, s := range a.Snake {
-		if i == 0 {
-			s.Direction = d
-			s.ChangeTo = d
-		} else {
-			s.ChangeTo = d
-		}
+	cs := a.SnakeHead.Next
+	p := a.SnakeHead.Direction[len(a.SnakeHead.Direction)-1]
+	for cs.Next != nil {
+		tp := cs.Direction[len(cs.Direction)-1]
 
-		s.ChangeIn = ci
-		ci += 1
+		cs.Direction = append(cs.Direction, p)
+		cs.Direction = append(cs.Direction, d)
+
+		p = tp
+		cs = cs.Next
 	}
 }
 
@@ -89,11 +122,13 @@ func directionFromKey(k termbox.Key) string {
 	return d
 }
 
-func contains(sl []*Snake, c [2]int) bool {
-	for _, s := range sl {
-		if [2]int{s.X, s.Y} == c {
+func contains(sh *SnakePart, c Pair) bool {
+	for sh.Next != nil {
+		if sh.Position == c {
 			return true
 		}
+
+		sh = sh.Next
 	}
 
 	return false
@@ -110,7 +145,7 @@ func (a *Arena) Draw() {
 				fmt.Print(YBorder)
 			}
 
-			if contains(a.Snake, [2]int{x, y}) {
+			if contains(a.SnakeHead, Pair{x, y}) {
 				fmt.Print("■  ")
 			} else {
 				fmt.Print("   ")
@@ -123,6 +158,12 @@ func (a *Arena) Draw() {
 	}
 	drawXBorder(a.MaxX, "└", "┘")
 	fmt.Println("-> ", time.Now())
+
+	c := a.SnakeHead
+	for c.Next != nil {
+		fmt.Println(c.Direction)
+		c = c.Next
+	}
 }
 
 func clear() {

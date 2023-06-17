@@ -9,26 +9,20 @@ import (
 
 func Run() {
 	a := &Arena{
-		Snake: []*Snake{
-			{
-				X:         5,
-				Y:         0,
-				Direction: Right,
-			},
-			{
-				X:         4,
-				Y:         0,
-				Direction: Right,
-			},
-			{
-				X:         3,
-				Y:         0,
-				Direction: Right,
-			},
-			{
-				X:         2,
-				Y:         0,
-				Direction: Right,
+		SnakeHead: &SnakePart{
+			Position:  Pair{5, 0},
+			Direction: []string{Right},
+			Next: &SnakePart{
+				Position:  Pair{4, 0},
+				Direction: []string{Right},
+				Next: &SnakePart{
+					Position:  Pair{3, 0},
+					Direction: []string{Right},
+					Next: &SnakePart{
+						Position:  Pair{2, 0},
+						Direction: []string{Right},
+					},
+				},
 			},
 		},
 		MaxX: 50,
