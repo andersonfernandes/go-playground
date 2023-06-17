@@ -2,14 +2,13 @@ package snake
 
 import (
 	"os"
-	"time"
 
 	"github.com/nsf/termbox-go"
 )
 
 func Run() {
 	a := &Arena{
-		SnakeHead: &SnakePart{
+		Snake: &SnakePart{
 			Position:  Pair{5, 0},
 			Direction: []string{Right},
 			Next: &SnakePart{
@@ -42,17 +41,14 @@ func Run() {
 			if e.Key == termbox.KeyCtrlC {
 				quit()
 			} else {
-				a.SetDirection(e.Key)
+				a.Snake.UpdateDirection(e.Key)
 				go listenKeyboard(c)
 			}
 		}
 	}()
 
 	for {
-		a.Move()
-		a.Draw()
-
-		time.Sleep(200 * time.Millisecond)
+		a.HandleUpdate()
 	}
 }
 
