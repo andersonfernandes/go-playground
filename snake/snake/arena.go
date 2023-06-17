@@ -8,6 +8,11 @@ import (
 )
 
 const (
+	ModeNormal string = "NORMAL"
+	ModeDebug         = "DEBUG"
+)
+
+const (
 	Up    string = "TOP"
 	Down         = "DOWN"
 	Right        = "RIGHT"
@@ -21,6 +26,7 @@ const (
 
 type Arena struct {
 	Snake *SnakePart
+	Mode  string
 	MaxX  int
 	MaxY  int
 }
@@ -49,14 +55,17 @@ func (a *Arena) Draw() {
 	}
 	drawXBorder(a.MaxX, "└", "┘")
 
-	fmt.Println("-> ", time.Now())
-	c := a.Snake
-	for c.Next != nil {
-		fmt.Println(c.Direction)
-		c = c.Next
+	if a.Mode == ModeDebug {
+		fmt.Println("[DEBUG]", time.Now())
+
+		c := a.Snake
+		for c.Next != nil {
+			fmt.Println(c.Direction)
+			c = c.Next
+		}
 	}
 
-	logState(*a)
+	writeLog(*a)
 }
 
 func (a *Arena) HandleUpdate() {
@@ -101,7 +110,11 @@ func drawXBorder(max int, rc string, lc string) {
 	}
 }
 
-func logState(a Arena) {
+func writeLog(a Arena) {
+	if a.Mode != ModeDebug {
+		return
+	}
+
 	f, err := os.OpenFile(
 		"snake_run.log",
 		os.O_RDWR|os.O_APPEND|os.O_CREATE,

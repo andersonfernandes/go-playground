@@ -7,6 +7,11 @@ import (
 )
 
 func Run() {
+	m := ModeNormal
+	if len(os.Args) > 1 && os.Args[1] == "debug" {
+		m = ModeDebug
+	}
+
 	a := &Arena{
 		Snake: &SnakePart{
 			Position:  Pair{5, 0},
@@ -24,6 +29,7 @@ func Run() {
 				},
 			},
 		},
+		Mode: m,
 		MaxX: 50,
 		MaxY: 25,
 	}
