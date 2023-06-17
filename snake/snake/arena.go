@@ -55,6 +55,8 @@ func (a *Arena) Draw() {
 		fmt.Println(c.Direction)
 		c = c.Next
 	}
+
+	logState(*a)
 }
 
 func (a *Arena) HandleUpdate() {
@@ -97,4 +99,35 @@ func drawXBorder(max int, rc string, lc string) {
 			fmt.Println(XBorder + lc)
 		}
 	}
+}
+
+func logState(a Arena) {
+	f, err := os.OpenFile(
+		"snake_run.log",
+		os.O_RDWR|os.O_APPEND|os.O_CREATE,
+		0644,
+	)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
+
+	f.Write([]byte("\n---\n"))
+	cs := a.Snake
+	for cs.Next != nil {
+		o := "- "
+		for i, s := range cs.Direction {
+			o += s
+
+			if i != len(cs.Direction)-1 {
+				o += ", "
+			}
+		}
+
+		f.Write([]byte(o + "\n"))
+		cs = cs.Next
+	}
+
+	f.Close()
 }
