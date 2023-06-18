@@ -5,9 +5,9 @@ import "github.com/nsf/termbox-go"
 type Pair [2]int
 
 type SnakePart struct {
-	Position  Pair
-	Direction []string
-	Next      *SnakePart
+	Position Pair
+	Moves    []string
+	Next     *SnakePart
 }
 
 func (s *SnakePart) Contains(c Pair) bool {
@@ -24,7 +24,7 @@ func (s *SnakePart) Contains(c Pair) bool {
 
 func (s *SnakePart) Eat() {
 	if s == nil {
-		s = &SnakePart{Position: Pair{0, 0}, Direction: []string{Right}}
+		s = &SnakePart{Position: Pair{0, 0}, Moves: []string{Right}}
 		return
 	}
 
@@ -32,8 +32,8 @@ func (s *SnakePart) Eat() {
 		s = s.Next
 	}
 
-	d := s.Direction[len(s.Direction)-1]
-	ns := &SnakePart{Direction: []string{d}}
+	d := s.Moves[len(s.Moves)-1]
+	ns := &SnakePart{Moves: []string{d}}
 	switch d {
 	case Up:
 		ns.Position = Pair{s.Position[0], s.Position[1] + 1}
@@ -52,7 +52,7 @@ func (s *SnakePart) Move() {
 	var d string
 
 	for s.Next != nil {
-		d, s.Direction = s.Direction[0], s.Direction[1:]
+		d, s.Moves = s.Moves[0], s.Moves[1:]
 
 		switch d {
 		case Up:
@@ -65,8 +65,8 @@ func (s *SnakePart) Move() {
 			s.Position[0] -= 1
 		}
 
-		if len(s.Direction) == 0 {
-			s.Direction = append(s.Direction, d)
+		if len(s.Moves) == 0 {
+			s.Moves = append(s.Moves, d)
 		}
 
 		s = s.Next
@@ -75,17 +75,17 @@ func (s *SnakePart) Move() {
 
 func (s *SnakePart) UpdateDirection(k termbox.Key) {
 	d := directionFromKey(k)
-	s.Direction = []string{d}
+	s.Moves = []string{d}
 
 	cs := s.Next
-	p := s.Direction[len(s.Direction)-1]
+	pm := s.Moves[len(s.Moves)-1]
 	for cs.Next != nil {
-		tp := cs.Direction[len(cs.Direction)-1]
+		tm := cs.Moves[len(cs.Moves)-1]
 
-		cs.Direction = append(cs.Direction, p)
-		cs.Direction = append(cs.Direction, d)
+		cs.Moves = append(cs.Moves, pm)
+		cs.Moves = append(cs.Moves, d)
 
-		p = tp
+		pm = tm
 		cs = cs.Next
 	}
 }

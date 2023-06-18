@@ -14,17 +14,17 @@ func Run() {
 
 	a := &Arena{
 		Snake: &SnakePart{
-			Position:  Pair{5, 0},
-			Direction: []string{Right},
+			Position: Pair{5, 0},
+			Moves:    []string{Right},
 			Next: &SnakePart{
-				Position:  Pair{4, 0},
-				Direction: []string{Right},
+				Position: Pair{4, 0},
+				Moves:    []string{Right},
 				Next: &SnakePart{
-					Position:  Pair{3, 0},
-					Direction: []string{Right},
+					Position: Pair{3, 0},
+					Moves:    []string{Right},
 					Next: &SnakePart{
-						Position:  Pair{2, 0},
-						Direction: []string{Right},
+						Position: Pair{2, 0},
+						Moves:    []string{Right},
 					},
 				},
 			},

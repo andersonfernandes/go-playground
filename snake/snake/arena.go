@@ -58,10 +58,10 @@ func (a *Arena) Draw() {
 	if a.Mode == ModeDebug {
 		fmt.Println("[DEBUG]", time.Now())
 
-		c := a.Snake
-		for c.Next != nil {
-			fmt.Println(c.Direction)
-			c = c.Next
+		s := a.Snake
+		for s.Next != nil {
+			fmt.Println(s.Moves)
+			s = s.Next
 		}
 	}
 
@@ -96,16 +96,16 @@ func drawLogo() {
 	fmt.Println("                                                                                              ")
 }
 
-func drawXBorder(max int, rc string, lc string) {
-	for x := 0; x < max; x++ {
-		if x == 0 {
-			fmt.Print(rc)
+func drawXBorder(max int, rCorner string, lCorner string) {
+	for i := 0; i < max; i++ {
+		if i == 0 {
+			fmt.Print(rCorner)
 		}
 
-		if x < max-1 {
+		if i < max-1 {
 			fmt.Print(XBorder)
 		} else {
-			fmt.Println(XBorder + lc)
+			fmt.Println(XBorder + lCorner)
 		}
 	}
 }
@@ -127,19 +127,19 @@ func writeLog(a Arena) {
 	}
 
 	f.Write([]byte("\n---\n"))
-	cs := a.Snake
-	for cs.Next != nil {
+	s := a.Snake
+	for s.Next != nil {
 		o := "- "
-		for i, s := range cs.Direction {
-			o += s
+		for i, m := range s.Moves {
+			o += m
 
-			if i != len(cs.Direction)-1 {
+			if i != len(s.Moves)-1 {
 				o += ", "
 			}
 		}
 
 		f.Write([]byte(o + "\n"))
-		cs = cs.Next
+		s = s.Next
 	}
 
 	f.Close()
